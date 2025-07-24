@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.smhrd.board.config.FileUploadConfig;
+import com.smhrd.board.config.WebConfig;
 import com.smhrd.board.entity.BoardEntity;
 import com.smhrd.board.entity.UserEntity;
 import com.smhrd.board.service.BoardService;
@@ -28,13 +29,19 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/board") // controller에 requestmapping 진행 시 default url 변경
 public class BoardController {
 
+    private final MainController mainController;
+
+    private final WebConfig webConfig;
+
 	@Autowired
 	BoardService boardService;
 
 	private final FileUploadConfig fileUploadConfig;
 
-	BoardController(FileUploadConfig fileUploadConfig) {
+	BoardController(FileUploadConfig fileUploadConfig, WebConfig webConfig, MainController mainController) {
 		this.fileUploadConfig = fileUploadConfig;
+		this.webConfig = webConfig;
+		this.mainController = mainController;
 	}
 
 	// 글쓰기 기능
@@ -61,10 +68,13 @@ public class BoardController {
 			// C:/upload 폴더에 저장할 예정
 			// --> 업로드 할 경로를 변수로 가지고 오기
 			String uploadDir = fileUploadConfig.getUploadDir();
+			
 
 			// 예시) C:upload/123_1.jpg로 저장됨
 			// 앞부분이 uploadDir, 뒷부분이 file_name
 			String filePath = Paths.get(uploadDir, file_name).toString();
+			
+			System.out.println(filePath);
 			// uploadDir + file_name으로 작성 시 os에 따라 경로 못잡음
 
 			// 파일 경로 확인 후 이미지 저장
